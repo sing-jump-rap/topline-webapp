@@ -5,12 +5,14 @@
           <!-- 登录表单 -->
           <van-cell-group>
             <van-field
+            v-model="user.mobile"
                 required
                 clearable
                 label="手机号"
                 placeholder="请输入手机号"
             />
             <van-field
+            v-model="user.code"
                 type="password"
                 label="验证码"
                 placeholder="请输入验证码"
@@ -20,14 +22,42 @@
 
           <!-- 登录按钮 -->
           <div class="btn-wrap">
-              <van-button class="btn" type="info">登录</van-button>
+              <van-button @click="onLogin" class="btn" type="info">登录</van-button>
           </div>
   </div>
 </template>
 
 <script>
+import request from '@/utils/request'
 export default {
-  name: 'LoginIndex'
+  name: 'LoginIndex',
+  data () {
+    return {
+      user: {
+        mobile: '13911111111',
+        code: '246810'
+      }
+    }
+  },
+  methods: {
+    async onLogin () {
+      try {
+        // 提交
+        const { data } = await request({
+          method: 'POST',
+          url: '/app/v1_0/authorizations',
+          data: this.user
+        })
+        console.log(data)
+        this.$toast.success('登录成功')
+      } catch (err) {
+        //   失败进入(为更严谨加入if判断)
+        if (err.response && err.response.status === 400) {
+          this.$toast.fail('登录失败，手机号或验证码错误')
+        }
+      }
+    }
+  }
 }
 </script>
 
