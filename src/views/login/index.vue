@@ -1,5 +1,28 @@
 <template>
-  <div class="login">登录页面</div>
+  <div class="login">
+      <!-- 导航栏 -->
+      <van-nav-bar title="标题"/>
+          <!-- 登录表单 -->
+          <van-cell-group>
+            <van-field
+                required
+                clearable
+                label="手机号"
+                placeholder="请输入手机号"
+            />
+            <van-field
+                type="password"
+                label="验证码"
+                placeholder="请输入验证码"
+                required
+            />
+          </van-cell-group>
+
+          <!-- 登录按钮 -->
+          <div class="btn-wrap">
+              <van-button class="btn" type="info">登录</van-button>
+          </div>
+  </div>
 </template>
 
 <script>
@@ -9,4 +32,14 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.login {
+  .btn-wrap {
+    padding: 20px;
+    .btn {
+      width: 100%;
+      background-color: #6db4fb;
+      color: #fff;
+    }
+  }
+}
 </style>
