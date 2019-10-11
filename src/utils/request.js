@@ -1,4 +1,5 @@
 import axios from 'axios'
+import jsonBig from 'json-bigint'
 
 // axios.create 方法
 // 建议使用 create 方式，我们可以拥有
@@ -8,5 +9,12 @@ import axios from 'axios'
 const request = axios.create({
   baseURL: 'http://ttapi.research.itcast.cn'
 })
+
+/**
+ * 配置处理后端返回数据中超出 js 安全整数范围问题
+ */
+request.defaults.transformResponse = [function (data) {
+  return data ? jsonBig.parse(data) : {} // 换了一个转化方法 使得 计算更精确 保证id不失真
+}]
 
 export default request
