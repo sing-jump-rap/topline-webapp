@@ -14,7 +14,8 @@ import {
   CellGroup,
   NavBar,
   Field,
-  Toast
+  Toast,
+  Tabbar, TabbarItem
 } from 'vant'
 
 // 配置使用中文语言
@@ -47,6 +48,8 @@ Vue
   .use(NavBar)
   .use(Field)
   .use(Toast)
+  .use(Tabbar)
+  .use(TabbarItem)
 
 Vue.config.productionTip = false
 
