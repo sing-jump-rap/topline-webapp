@@ -41,6 +41,7 @@
 <script>
 // import request from '@/utils/request'
 import { login } from '@/api/user'
+import { setItem } from '@/utils/storage'
 export default {
   name: 'LoginIndex',
   data () {
@@ -77,13 +78,19 @@ export default {
         toast.clear()
 
         // 登录成功
+        // 将服务器返回的token存储到vuex
+        this.$store.commit('setUser', data.data)
+        // 将token本地存储
+        setItem('user', data.data)
+
+        // 提示成功消息
         this.$toast.success({
           duration: 2000,
           message: '登录成功'
         })
       } catch (err) {
         toast.clear()
-        //   失败进入(为更严谨加入if判断)
+        //   登录失败进入(为更严谨加入if判断)
         if (err.response && err.response.status === 400) {
           this.$toast.fail('登录失败，手机号或验证码错误')
         }
