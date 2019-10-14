@@ -15,7 +15,9 @@ import {
   NavBar,
   Field,
   Toast,
-  Tabbar, TabbarItem
+  Tabbar, TabbarItem,
+  Tab, Tabs,
+  List
 } from 'vant'
 
 // 配置使用中文语言
@@ -50,6 +52,9 @@ Vue
   .use(Toast)
   .use(Tabbar)
   .use(TabbarItem)
+  .use(Tab)
+  .use(Tabs)
+  .use(List)
 
 Vue.config.productionTip = false
 
