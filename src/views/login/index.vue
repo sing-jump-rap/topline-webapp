@@ -28,7 +28,8 @@
 </template>
 
 <script>
-import request from '@/utils/request'
+// import request from '@/utils/request'
+import { login } from '@/api/user'
 export default {
   name: 'LoginIndex',
   data () {
@@ -40,17 +41,30 @@ export default {
     }
   },
   methods: {
+
     async onLogin () {
+      // 表单验证
+      const toast = this.$toast.loading({
+        duration: 0, // 持续展示 toast
+        forbidClick: true, // 禁用背景点击
+        loadingType: 'spinner',
+        message: '登陆中'
+      })
       try {
         // 提交
-        const { data } = await request({
-          method: 'POST',
-          url: '/app/v1_0/authorizations',
-          data: this.user
-        })
+        const { data } = await login(this.user)
         console.log(data)
-        this.$toast.success('登录成功')
+
+        // 结束login
+        toast.clear()
+
+        // 登录成功
+        this.$toast.success({
+          duration: 2000,
+          message: '登录成功'
+        })
       } catch (err) {
+        toast.clear()
         //   失败进入(为更严谨加入if判断)
         if (err.response && err.response.status === 400) {
           this.$toast.fail('登录失败，手机号或验证码错误')
