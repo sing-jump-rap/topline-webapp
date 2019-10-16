@@ -17,7 +17,12 @@ import {
   Toast,
   Tabbar, TabbarItem,
   Tab, Tabs,
-  List
+  List,
+  PullRefresh,
+  Grid, GridItem,
+  Image,
+  Icon,
+  Lazyload
 } from 'vant'
 
 // 配置使用中文语言
@@ -55,6 +60,12 @@ Vue
   .use(Tab)
   .use(Tabs)
   .use(List)
+  .use(PullRefresh)
+  .use(Grid)
+  .use(GridItem)
+  .use(Image)
+  .use(Icon)
+  .use(Lazyload)
 
 Vue.config.productionTip = false
 
