@@ -1,8 +1,8 @@
 <template>
   <div class="home">
-    <!-- 导航栏 -->
+    <!-- 导航栏 （添加fixed 属性让头部导航栏固定）-->
     <van-nav-bar
-      title="首页"
+      title="首页" fixed
     />
     <!-- /导航栏 -->
 
@@ -143,6 +143,16 @@ export default {
 
 <style lang="less" scoped>
 .home {
+  .van-tabs /deep/ .van-tabs__wrap--scrollable {
+    position: fixed;
+    top: 46px;
+    left: 0;
+    right: 16px;
+    z-index: 2;
+  }
+   .van-tabs /deep/ .van-tabs__content {
+    margin-top: 90px;
+  }
   .article-info {
     display: flex;
     align-items: center;
