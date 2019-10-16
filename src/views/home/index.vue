@@ -25,9 +25,9 @@
           @load="onLoad"
         >
           <van-cell
-            v-for="item in channel.articles"
-            :key="item"
-            :title="item"
+            v-for="(article,index) in channel.articles"
+            :key="index"
+            :title="article.title"
           />
         </van-list>
         <!-- /文章列表 -->
@@ -41,7 +41,7 @@
 
 <script>
 import { getDefaultChannels } from '@/api/channel'
-
+import { getArticles } from '@/api/article'
 // import { loadavg } from 'os'
 export default {
   name: 'HomeIndex',
@@ -58,23 +58,30 @@ export default {
     this.loadChannels()
   },
   methods: {
-    onLoad () {
+    async onLoad () {
       // 激活当前频道对象
       const activeChannel = this.channels[this.active]
 
-      // 异步更新数据
-      setTimeout(() => {
-        for (let i = 0; i < 10; i++) {
-          activeChannel.articles.push(activeChannel.articles.length + 1)
-        }
-        // 加载状态结束
-        activeChannel.loading = false
+      // 向接口请求获取数据
+      const { data } = await getArticles({
+        channel_id: activeChannel.id, // 频道id
+        timestamp: activeChannel.timestamp || Date.now(), // 时间戳
+        with_top: 1// 是否包含顶置
+      })
+      // 将数据添加到频道列表
+      activeChannel.articles.push(...data.data.results)
 
-        // 数据全部加载完成
-        if (activeChannel.articles.length >= 40) {
-          activeChannel.finished = true
-        }
-      }, 500)
+      // 结束当前频道loading
+      activeChannel.loading = false
+
+      // 判断是否还有下一页数据
+      if (data.data.pre_timestamp) {
+        // 获取下一页数据页码的时间戳
+        activeChannel.timestamp = data.data.pre_timestamp
+      } else {
+        // 无数据
+        activeChannel.finished = true
+      }
     },
     async loadChannels () {
       const { data } = await getDefaultChannels()
@@ -85,6 +92,7 @@ export default {
         channel.articles = [] // 存储频道的文章列表
         channel.finished = false // 存储频道的加载结束状态
         channel.loading = false // 存储频道的加载更多的 loading 状态
+        channel.timestamp = null // 存储获取频道下一页时间戳
       })
       this.channels = channels
     }
