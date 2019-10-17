@@ -85,9 +85,10 @@
         </van-cell>
         <van-grid :gutter="10">
           <van-grid-item
-           v-for="value in 8"
-           :key="value"
-           text="文字"
+           v-for="(channel,index) in recommondChannels"
+           :key="index"
+           :text="channel.name"
+           @click="onAddChannel(channel)"
            />
         </van-grid>
       </div>
@@ -97,8 +98,9 @@
 </template>
 
 <script>
-import { getDefaultChannels } from '@/api/channel'
+import { getDefaultChannels, getAllChannels } from '@/api/channel'
 import { getArticles } from '@/api/article'
+import { getItem, setItem } from '@/utils/storage' // 操作本地存储
 // import { loadavg } from 'os'
 export default {
   name: 'HomeIndex',
@@ -109,13 +111,56 @@ export default {
       // loading: false,
       // finished: false,
       channels: [], // 存放频道列表
-      isChannelEditShow: true // 弹窗
+      isChannelEditShow: true, // 弹窗
+      allChannels: []// 存放所有频道
+    }
+  },
+  watch: {
+    channels (newVal) {
+      setItem('channels', newVal)
+    }
+  },
+  computed: {
+    // 计算推荐属性
+    recommondChannels () {
+      const arr = []
+      // 遍历所有频道
+      this.allChannels.forEach(channel => {
+      // 判断 channel 是否存在我的频道中
+      // 如果不存在，就证明它是剩余推荐的频道
+
+        // 数组的 find 方法
+        // 它会遍历数组，每遍历一次，它就判定 item.id === channel.id
+        // 如果 true，则停止遍历，返回满足该条件的元素
+        // 如果 false，则继续遍历
+        // 如果直到遍历结束都没有找到符合 item.id === channel.id 条件的元素，则返回 undefined
+        const ret = this.channels.find(item => item.id === channel.id)
+        if (!ret) {
+          arr.push(channel)
+        }
+      })
+
+      return arr
+    // return 所有频道 - 我的频道
     }
   },
   created () {
-    this.loadChannels()
+    this.loadChannels() // 获取我的频道
+    this.loadAllChannels() // 获取所有频道
   },
   methods: {
+    // 添加频道
+    onAddChannel (channel) {
+      this.channels.push(channel)
+    },
+
+    // 获取所有频道
+    async loadAllChannels () {
+      const { data } = await getAllChannels()
+      console.log(data)
+      this.allChannels = data.data.channels
+    },
+
     // 下拉刷新
     async onRefresh () {
       // 获取当前激活的频道对象
@@ -137,6 +182,7 @@ export default {
       this.$toast('刷新成功')
     },
 
+    // 上拉加载更多
     async onLoad () {
       // 激活当前频道对象
       const activeChannel = this.channels[this.active]
@@ -162,9 +208,21 @@ export default {
         activeChannel.finished = true
       }
     },
+
+    // 加载频道列表
     async loadChannels () {
-      const { data } = await getDefaultChannels()
-      const channels = data.data.channels
+      let channels = []
+      // 读取本地存储的频道列表
+      const localChannels = getItem('channels')
+
+      // 如果有本地存储的频道列表就使用本地存储的频道列表
+      if (localChannels) {
+        channels = localChannels
+      } else {
+        // 如果没有本地存储的频道列表，则请求获取后台推荐的频道列表
+        const { data } = await getDefaultChannels()
+        channels = data.data.channels
+      }
 
       // 为每个频道添加自定义数据：文章列表 loading finished
       channels.forEach(channel => {
