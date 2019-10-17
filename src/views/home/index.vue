@@ -7,7 +7,7 @@
     <!-- /导航栏 -->
 
     <!-- 频道列表 -->
-    <van-tabs v-model="active">
+    <van-tabs v-model="active" animated swipeable>
       <van-tab :title="channel.name"
       v-for="channel in channels"
       :key="channel.id"
@@ -51,10 +51,48 @@
           <!-- /文章列表 -->
         </van-pull-refresh>
       </van-tab>
-      <!-- <van-tab title="标签 2">内容 2</van-tab>
-      <van-tab title="标签 3">内容 3</van-tab>
-      <van-tab title="标签 4">内容 4</van-tab> -->
+
+        <!-- 面包按钮 -->
+        <div slot="nav-right" class="wap-nav" @click="isChannelEditShow = true">
+          <van-icon name="wap-nav" size="24"/>
+        </div>
+
     </van-tabs>
+
+    <!-- 频道管理 -->
+    <van-popup
+      v-model="isChannelEditShow"
+      position="bottom"
+      :style="{ height: '95%' }"
+      round
+      closeable
+      close-icon-position="top-left"
+    >
+
+      <div class="channel-container">
+        <van-cell title="我的频道" :border="false">
+          <van-button type="danger" size="mini">编辑</van-button>
+        </van-cell>
+        <van-grid :gutter="10">
+          <van-grid-item
+           v-for="(channel,index) in channels"
+           :key="index"
+           :text="channel.name"
+           />
+        </van-grid>
+
+        <van-cell title="推荐频道" :border="false">
+        </van-cell>
+        <van-grid :gutter="10">
+          <van-grid-item
+           v-for="value in 8"
+           :key="value"
+           text="文字"
+           />
+        </van-grid>
+      </div>
+    </van-popup>
+
   </div>
 </template>
 
@@ -70,7 +108,8 @@ export default {
       // list: [],
       // loading: false,
       // finished: false,
-      channels: []// 存放频道列表
+      channels: [], // 存放频道列表
+      isChannelEditShow: true // 弹窗
     }
   },
   created () {
@@ -151,7 +190,18 @@ export default {
         margin-right: 10px;
       }
     }
+    .channel-container {
+      padding-top: 30px;
+    }
     .van-tabs {
+      .wap-nav {
+        position: sticky;
+        right: 0;
+        display: flex;
+        align-items: center;
+        background-color: #fff;
+        opacity: 0.8;
+      }
       /deep/ .van-tabs__wrap {
       position: fixed;
       top: 46px;

@@ -23,7 +23,8 @@ import {
   Grid, GridItem,
   Image,
   Icon,
-  Lazyload
+  Lazyload,
+  popup
 } from 'vant'
 
 // 配置使用中文语言
@@ -67,7 +68,7 @@ Vue
   .use(Image)
   .use(Icon)
   .use(Lazyload)
-
+  .use(popup)
 Vue.config.productionTip = false
 
 new Vue({
