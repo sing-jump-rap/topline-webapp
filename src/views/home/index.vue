@@ -143,23 +143,26 @@ export default {
 
 <style lang="less" scoped>
 .home {
-  .van-tabs /deep/ .van-tabs__wrap--scrollable {
-    position: fixed;
-    top: 46px;
-    left: 0;
-    right: 16px;
-    z-index: 2;
-  }
-   .van-tabs /deep/ .van-tabs__content {
-    margin-top: 90px;
-  }
-  .article-info {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    .meta span {
-      margin-right: 10px;
+    .article-info {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      .meta span {
+        margin-right: 10px;
+      }
     }
-  }
+    .van-tabs {
+      /deep/ .van-tabs__wrap {
+      position: fixed;
+      top: 46px;
+      left: 0;
+      right: 16px;
+      z-index: 2;
+      }
+      /deep/ .van-tabs__content {
+      margin-top: 90px;
+      margin-bottom: 50px;
+      }
+    }
 }
 </style>
